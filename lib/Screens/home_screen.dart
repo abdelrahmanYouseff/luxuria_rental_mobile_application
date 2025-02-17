@@ -178,7 +178,7 @@ Widget carSlider() {
           padding: const EdgeInsets.symmetric(horizontal: 8.0), // إضافة مسافة بين الكروت
           child: CarCard(
             imageUrl: 'assets/images/carDemo.png',
-            title: 'Luxury Car 1',
+            title: 'Luxury Car',
             description: 'Model 1',
             price: '\$99/day',
           ),
@@ -187,7 +187,7 @@ Widget carSlider() {
           padding: const EdgeInsets.symmetric(horizontal: 8.0), // إضافة مسافة بين الكروت
           child: CarCard(
             imageUrl: 'assets/images/carDemo.png',
-            title: 'Luxury Car 2',
+            title: 'Luxury Car',
             description: 'Model 2',
             price: '\$99/day',
           ),
@@ -196,7 +196,7 @@ Widget carSlider() {
           padding: const EdgeInsets.symmetric(horizontal: 8.0), // إضافة مسافة بين الكروت
           child: CarCard(
             imageUrl: 'assets/images/carDemo.png',
-            title: 'Luxury Car 3',
+            title: 'Luxury Car',
             description: 'Model 3',
             price: '\$99/day',
           ),

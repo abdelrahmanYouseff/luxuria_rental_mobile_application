@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:luxuria_rentl_app/Screens/car-details.dart'; // استيراد صفحة التفاصيل
+import 'package:luxuria_rentl_app/Screens/car-details.dart'; 
 
 class CarCard extends StatelessWidget {
   final String imageUrl;
   final String title;
   final String description;
   final String price;
-  final bool showDescription; // خاصية للتحكم في عرض الوصف
-
+  final bool showDescription; 
   const CarCard({
     Key? key,
     required this.imageUrl,
     required this.title,
     required this.description,
     required this.price,
-    this.showDescription = true, // القيمة الافتراضية هي true
+    this.showDescription = true, 
   }) : super(key: key);
 
   @override
@@ -55,12 +54,12 @@ class CarCard extends StatelessWidget {
                             Text(
                               title,
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             SizedBox(height: 0),
-                            if (showDescription) // التحكم في عرض الوصف
+                            if (showDescription) 
                               Text(
                                 description,
                                 style: TextStyle(
@@ -71,7 +70,7 @@ class CarCard extends StatelessWidget {
                             Text(
                               price,
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 14,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -94,7 +93,7 @@ class CarCard extends StatelessWidget {
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Image.asset(
-                            'assets/images/carDemo.png', // صورة افتراضية عند حدوث خطأ
+                            'assets/images/carDemo.png', 
                             width: 157,
                             height: 130,
                             fit: BoxFit.cover,

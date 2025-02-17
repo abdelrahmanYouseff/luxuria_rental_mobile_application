@@ -18,7 +18,7 @@ class _LuxuryCarsPageState extends State<LuxuryCarsPage> {
   @override
   void initState() {
     super.initState();
-    futureCars = ApiService.fetchLuxuryCars(); // استدعاء API بطريقة واضحة
+    futureCars = ApiService.fetchLuxuryCars(); 
   }
 
   void onTap(int index) {

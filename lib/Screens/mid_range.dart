@@ -109,27 +109,27 @@ class _MidRangePageState extends State<MidRangePage> {
                      if (category == 'Luxury') {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => LuxuryCarsPage()), // انتقل إلى صفحة الفخامة
+                            MaterialPageRoute(builder: (context) => LuxuryCarsPage()), 
                           );
                         } else if (category == 'Mid Range') {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => MidRangePage()), // انتقل إلى صفحة الفئة المتوسطة
+                            MaterialPageRoute(builder: (context) => MidRangePage()), 
                           );
                         }else if (category == 'Economy') {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => EconomyPage()), // انتقل إلى صفحة الفئة المتوسطة
+                            MaterialPageRoute(builder: (context) => EconomyPage()), 
                           );
                         }else if (category == 'Vans & Buses') {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => VansPage()), // انتقل إلى صفحة الفئة المتوسطة
+                            MaterialPageRoute(builder: (context) => VansPage()), 
                           );
                         }else if (category == 'Sports') {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => SportsPage()), // انتقل إلى صفحة الفئة المتوسطة
+                            MaterialPageRoute(builder: (context) => SportsPage()), 
                           );
                         } else {
                           print('$category selected');
