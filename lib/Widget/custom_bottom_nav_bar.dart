@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luxuria_rentl_app/Screens/home_screen.dart'; // تأكد من استيراد HomeScreen
 
 class CustomBottomNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -46,7 +47,17 @@ class CustomBottomNavBar extends StatelessWidget {
       currentIndex: selectedIndex,
       selectedItemColor: Colors.black,
       unselectedItemColor: Colors.black,
-      onTap: onTap,
+      backgroundColor: Colors.white, // تغيير لون الخلفية إلى الأبيض
+      onTap: (index) {
+        if (index == 0) { // إذا كانت الفهرس 0 تعني أن المستخدم اختار الصفحة الرئيسية
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()), // انتقل إلى شاشة الهوم
+          );
+        } else {
+          onTap(index); // تمرير الفهرس لبقية العناصر
+        }
+      },
       type: BottomNavigationBarType.fixed,
     );
   }

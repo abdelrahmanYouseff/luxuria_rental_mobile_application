@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:luxuria_rentl_app/Widget/carCard.dart'; // تأكد من صحة المسار
-import 'package:luxuria_rentl_app/Widget/custom_bottom_nav_bar.dart'; // تأكد من المسار الصحيح
+import 'package:luxuria_rentl_app/Widget/carCard.dart';
+import 'package:luxuria_rentl_app/Widget/custom_bottom_nav_bar.dart';
+import 'package:luxuria_rentl_app/Screens/luxury_cars.dart';
+import 'package:luxuria_rentl_app/Screens/mid_range.dart';
+import 'package:luxuria_rentl_app/Screens/economy_screen.dart';
+import 'package:luxuria_rentl_app/Screens/vans_screen.dart';
+import 'package:luxuria_rentl_app/Screens/sports_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -10,40 +15,38 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  final List<String> categories = [
-    'Luxury',
-    'Mid Range',
-    'Economy',
-    'Buses & Vans',
-    'Sports',
-  ];
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      if (_selectedIndex == 0) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // تغيير خلفية الصفحة إلى الأبيض
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Padding(
           padding: const EdgeInsets.only(left: 20),
           child: Text(
             'Home',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
           ),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.notifications),
+            icon: SizedBox(
+              width: 24,
+              height: 24,
+              child: Image.asset('assets/icons/mingcute_notification-line.png'),
+            ),
             onPressed: () {
               print('Notifications Icon Pressed');
             },
@@ -59,142 +62,87 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Text(
                   'Good Day,',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black),
                 ),
                 SizedBox(width: 8),
-                Image.asset(
-                  'assets/icons/wave.png',
-                  width: 25,
-                )
+                Image.asset('assets/icons/wave.png', width: 25),
               ],
             ),
             SizedBox(height: 8),
             Text(
               'Experience our luxurious cars today with quick delivery!',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[700],
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey[700]),
             ),
             SizedBox(height: 50),
+
             Text(
-              'Choose Your Rental!',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+              'Categories',
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black),
+            ),
+            SizedBox(height: 20),
+
+            Container(
+              height: 50,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  categoryButton('Luxury'),
+                  categoryButton('Mid Range'),
+                  categoryButton('Economy'),
+                  categoryButton('Vans & Bus'),
+                  categoryButton('Sports'),
+                ],
               ),
             ),
-            SizedBox(height: 15),
-            // سلايدر للأزرار
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: categories.map((category) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        print('$category selected');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                      ),
-                      child: Text(
-                        category,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-            SizedBox(height: 30), // مسافة قبل قسم الترويج
-            
-            // عنوان الترويج
+
+            SizedBox(height: 30),
+
             Text(
               'Promotions',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black),
             ),
-            SizedBox(height: 15),
+            SizedBox(height: 10),
 
-            // صورة الترويج
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                'assets/images/promotions.png',
-                width: double.infinity,
-                height: 180,
-                fit: BoxFit.cover,
-              ),
+            Image.asset(
+              'assets/images/promotions.png',
+              width: double.infinity,
+              fit: BoxFit.cover,
             ),
-            SizedBox(height: 15),
 
-            // نص Luxury Cars و View All
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Luxury Cars',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    print('View All Pressed');
-                  },
-                  child: Text(
-                    'View All',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 15),
+            SizedBox(height: 20),
 
-            // عرض كارد السيارة
-            CarCard(
-              imageUrl: 'assets/images/carDemo.png', // ضع مسار الصورة هنا
-              title: 'Luxury Car 1',
-              description: 'Luxury',
-              price: '\150 AED / Daily',
-            ),
-            SizedBox(height: 15), // مسافة بين الكروت
-            CarCard(
-              imageUrl: 'assets/images/carDemo.png', // ضع مسار الصورة هنا
-              title: 'Luxury Car 2',
-              description: 'Experience the best in luxury.',
-              price: '\$200/day',
-            ),
-            SizedBox(height: 15), // مسافة بين الكروت
-            CarCard(
-              imageUrl: 'assets/images/carDemo.png', // ضع مسار الصورة هنا
-              title: 'Luxury Car 2',
-              description: 'Experience the best in luxury.',
-              price: '\$200/day',
-            ),
+            // قسم Luxury Cars
+            sectionTitle('Luxury Cars'),
+            SizedBox(height: 20),
+            carSlider(), 
+
+            SizedBox(height: 35),
+
+            // قسم جديد أسفل Mid Rang Cars
+            sectionTitle('Mid Rang Cars'),
+            SizedBox(height: 20),
+            carSlider(), 
+
+            SizedBox(height: 20),
+
+            // قسم جديد أسفل Mid Rang Cars
+            sectionTitle('Economy Cars'),
+            SizedBox(height: 20),
+            carSlider(), 
+            
+            SizedBox(height: 20),
+
+            // قسم جديد أسفل Mid Rang Cars
+            sectionTitle('Vans & Bus Cars'),
+            SizedBox(height: 20),
+            carSlider(), 
+
+            SizedBox(height: 20),
+
+            // قسم جديد أسفل Mid Rang Cars
+            sectionTitle('Sports'),
+            SizedBox(height: 20),
+            carSlider(), 
           ],
         ),
       ),
@@ -204,4 +152,107 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  Widget sectionTitle(String title) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        Text(
+          'View All',
+          style: TextStyle(fontSize: 16, color: Colors.blue),
+        ),
+      ],
+    );
+  }
+
+Widget carSlider() {
+  return Container(
+    height: 200, // ارتفاع السلايدر
+    child: PageView(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0), // إضافة مسافة بين الكروت
+          child: CarCard(
+            imageUrl: 'assets/images/carDemo.png',
+            title: 'Luxury Car 1',
+            description: 'Model 1',
+            price: '\$99/day',
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0), // إضافة مسافة بين الكروت
+          child: CarCard(
+            imageUrl: 'assets/images/carDemo.png',
+            title: 'Luxury Car 2',
+            description: 'Model 2',
+            price: '\$99/day',
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0), // إضافة مسافة بين الكروت
+          child: CarCard(
+            imageUrl: 'assets/images/carDemo.png',
+            title: 'Luxury Car 3',
+            description: 'Model 3',
+            price: '\$99/day',
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+
+Widget categoryButton(String text) {
+  return GestureDetector(
+    onTap: () {
+      if (text == 'Luxury') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LuxuryCarsPage()),
+        );
+      } else if (text == 'Mid Range') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MidRangePage()),
+        );
+      } else if (text == 'Economy') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => EconomyPage()),
+        );
+      } else if (text == 'Vans & Bus') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => VansPage()),
+        );
+      } else if (text == 'Sports') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SportsPage()),
+        );
+      }
+      
+    },
+    child: Container(
+      width: 120,
+      height: 40,
+      margin: EdgeInsets.symmetric(horizontal: 5),
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(25),
+      ),
+      child: Center(
+        child: Text(
+          text,
+          style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+      ),
+    ),
+  );
+}
 }
