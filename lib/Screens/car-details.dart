@@ -55,13 +55,27 @@ class CarDetailsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: Image.asset(
-                imageUrl,
-                width: double.infinity,
-                height: 250,
-                fit: BoxFit.cover,
+  child: Image.network(
+    imageUrl,
+    width: double.infinity,
+    height: 250,
+    fit: BoxFit.cover,
+    loadingBuilder: (context, child, loadingProgress) {
+      if (loadingProgress == null) return child;
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                            : null,
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return Center(child: Icon(Icons.error)); // Display an error icon if the image fails to load
+                  },
+                ),
               ),
-            ),
+
             SizedBox(height: 20),
             Text(
               title,
@@ -122,26 +136,26 @@ class CarDetailsScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 20),  // مسافة بين الزر والنص
+            SizedBox(height: 20),  
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,  // للتأكد من توزيع الأيقونات على أقصى الجانبين
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,  
               children: [
                 Text(
-                  "Need Assistance?",  // النص المطلوب إضافته
+                  "Need Assistance?",  
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 Row(
                   children: [
                     IconButton(
-                      icon: Image.asset('assets/icons/whatsapp.png', width: 30, height: 30),  // استبدال الأيقونة بالصورة
+                      icon: Image.asset('assets/icons/whatsapp.png', width: 30, height: 30),  
                       onPressed: () {
-                        // أضف إجراء واتس آب
+                        
                       },
                     ),
                     IconButton(
                       icon: Icon(Icons.phone, color: Colors.black),
                       onPressed: () {
-                        // أضف إجراء الاتصال
+                        
                       },
                     ),
                   ],

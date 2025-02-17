@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:luxuria_rentl_app/Screens/home_screen.dart'; // تأكد من استيراد HomeScreen
+import 'package:luxuria_rentl_app/Screens/home_screen.dart';
+import 'package:luxuria_rentl_app/Screens/more_screen.dart';
+import 'package:luxuria_rentl_app/Screens/offers_screen.dart';
+import 'package:luxuria_rentl_app/Screens/profile_screen.dart'; // تأكد من استيراد ProfileScreen
 
 class CustomBottomNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -37,7 +40,7 @@ class CustomBottomNavBar extends StatelessWidget {
             width: 30,
             height: 30,
           ),
-          label: 'Orders',
+          label: 'Offers',
         ),
         const BottomNavigationBarItem(
           icon: Icon(Icons.more_horiz, color: Colors.black),
@@ -47,15 +50,30 @@ class CustomBottomNavBar extends StatelessWidget {
       currentIndex: selectedIndex,
       selectedItemColor: Colors.black,
       unselectedItemColor: Colors.black,
-      backgroundColor: Colors.white, // تغيير لون الخلفية إلى الأبيض
+      backgroundColor: Colors.white, 
       onTap: (index) {
-        if (index == 0) { // إذا كانت الفهرس 0 تعني أن المستخدم اختار الصفحة الرئيسية
+        if (index == 0) { 
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => HomeScreen()), // انتقل إلى شاشة الهوم
+            MaterialPageRoute(builder: (context) => HomeScreen()), 
+          );
+        } else if (index == 2) { // إذا كانت الفهرس 2 تعني أن المستخدم اختار "Profile"
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => ProfileScreen()), // الانتقال إلى صفحة الملف الشخصي
+          );
+        }else if (index == 4) { // إذا كانت الفهرس 2 تعني أن المستخدم اختار "Profile"
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => MoreScreen()), // الانتقال إلى صفحة الملف الشخصي
+          );
+        } else if (index == 3) { // إذا كانت الفهرس 2 تعني أن المستخدم اختار "Profile"
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => OfferScreen()), // الانتقال إلى صفحة الملف الشخصي
           );
         } else {
-          onTap(index); // تمرير الفهرس لبقية العناصر
+          onTap(index); 
         }
       },
       type: BottomNavigationBarType.fixed,

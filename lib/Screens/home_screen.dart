@@ -79,10 +79,10 @@ class _HomeScreenState extends State<HomeScreen> {
               'Categories',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 15),
 
             Container(
-              height: 50,
+              height: 40,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
@@ -111,35 +111,30 @@ class _HomeScreenState extends State<HomeScreen> {
 
             SizedBox(height: 20),
 
-            // قسم Luxury Cars
             sectionTitle('Luxury Cars'),
             SizedBox(height: 20),
             carSlider(), 
 
             SizedBox(height: 35),
 
-            // قسم جديد أسفل Mid Rang Cars
             sectionTitle('Mid Rang Cars'),
             SizedBox(height: 20),
             carSlider(), 
 
             SizedBox(height: 20),
 
-            // قسم جديد أسفل Mid Rang Cars
             sectionTitle('Economy Cars'),
             SizedBox(height: 20),
             carSlider(), 
             
             SizedBox(height: 20),
 
-            // قسم جديد أسفل Mid Rang Cars
             sectionTitle('Vans & Bus Cars'),
             SizedBox(height: 20),
             carSlider(), 
 
             SizedBox(height: 20),
 
-            // قسم جديد أسفل Mid Rang Cars
             sectionTitle('Sports'),
             SizedBox(height: 20),
             carSlider(), 
@@ -163,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         Text(
           'View All',
-          style: TextStyle(fontSize: 16, color: Colors.blue),
+          style: TextStyle(fontSize: 14, color: Colors.blue),
         ),
       ],
     );
@@ -175,7 +170,7 @@ Widget carSlider() {
     child: PageView(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0), // إضافة مسافة بين الكروت
+          padding: const EdgeInsets.symmetric(horizontal: 8.0), 
           child: CarCard(
             imageUrl: 'assets/images/carDemo.png',
             title: 'Luxury Car',
@@ -184,7 +179,7 @@ Widget carSlider() {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0), // إضافة مسافة بين الكروت
+          padding: const EdgeInsets.symmetric(horizontal: 8.0), 
           child: CarCard(
             imageUrl: 'assets/images/carDemo.png',
             title: 'Luxury Car',
@@ -193,7 +188,7 @@ Widget carSlider() {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0), // إضافة مسافة بين الكروت
+          padding: const EdgeInsets.symmetric(horizontal: 8.0), 
           child: CarCard(
             imageUrl: 'assets/images/carDemo.png',
             title: 'Luxury Car',
@@ -239,7 +234,7 @@ Widget categoryButton(String text) {
       
     },
     child: Container(
-      width: 120,
+      width: 100,
       height: 40,
       margin: EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
@@ -249,7 +244,7 @@ Widget categoryButton(String text) {
       child: Center(
         child: Text(
           text,
-          style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
         ),
       ),
     ),

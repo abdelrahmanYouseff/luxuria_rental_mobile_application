@@ -9,6 +9,22 @@ class ApiService {
     return _fetchCars('$baseUrl/luxury');
   }
 
+  static Future<List<Car>> fetchMidCars() async {
+    return _fetchCars('$baseUrl/mid');
+  }
+
+  static Future<List<Car>> fetchEconomyCars() async {
+    return _fetchCars('$baseUrl/economy');
+  }
+
+   static Future<List<Car>> fetchSportCars() async {
+    return _fetchCars('$baseUrl/sports');
+  }
+
+    static Future<List<Car>> fetchVansCars() async {
+    return _fetchCars('$baseUrl/vans');
+  }
+
   static Future<List<Car>> _fetchCars(String url) async {
     try {
       final response = await http.get(Uri.parse(url));

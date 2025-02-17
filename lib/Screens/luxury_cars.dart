@@ -3,6 +3,7 @@ import 'package:luxuria_rentl_app/Models/car_model.dart';
 import 'package:luxuria_rentl_app/Widget/carCard.dart';
 import 'package:luxuria_rentl_app/Widget/custom_bottom_nav_bar.dart';
 import 'package:luxuria_rentl_app/Services/api_service.dart';
+import 'package:luxuria_rentl_app/Screens/car-details.dart'; // تأكد من استيراد CarDetailsScreen
 
 class LuxuryCarsPage extends StatefulWidget {
   const LuxuryCarsPage({Key? key}) : super(key: key);
@@ -81,11 +82,27 @@ class _LuxuryCarsPageState extends State<LuxuryCarsPage> {
             itemCount: cars.length,
             padding: const EdgeInsets.symmetric(horizontal: 10),
             itemBuilder: (context, index) {
-              return CarCard(
-                imageUrl: cars[index].imageUrl,
-                title: cars[index].name,
-                description: cars[index].model,
-                price: '${cars[index].dailyPrice} AED / Daily',
+              return GestureDetector( // استخدم GestureDetector للاستجابة للضغط
+                onTap: () {
+                  // توجيه المستخدم إلى صفحة تفاصيل السيارة مع البيانات
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CarDetailsScreen(
+                        imageUrl: cars[index].imageUrl,
+                        title: cars[index].name,
+                        price: '${cars[index].dailyPrice} AED / Daily',
+                        description: cars[index].model,
+                      ),
+                    ),
+                  );
+                },
+                child: CarCard(
+                  imageUrl: cars[index].imageUrl,
+                  title: cars[index].name,
+                  description: cars[index].model,
+                  price: '${cars[index].dailyPrice} AED / Daily',
+                ),
               );
             },
           );
