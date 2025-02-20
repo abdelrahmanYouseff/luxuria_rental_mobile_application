@@ -1,11 +1,93 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // لإستخدام jsonEncode
 import 'package:luxuria_rentl_app/Widget/custom_bottom_nav_bar.dart'; 
+import 'package:luxuria_rentl_app/Screens/otp-screen.dart';
 
-class FirstFormScreen extends StatelessWidget {
+class FirstFormScreen extends StatefulWidget {
+  @override
+  _FirstFormScreenState createState() => _FirstFormScreenState();
+}
+
+class _FirstFormScreenState extends State<FirstFormScreen> {
+  String? selectedCity;
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+
+Future<void> submitData() async {
+  final url = 'http://rentluxuria.com/api/users'; // تأكد من استخدام الرابط الصحيح
+  try {
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'name': nameController.text,
+        'phone_number': phoneController.text,
+        'email_address': emailController.text,
+        'pickup_city': selectedCity,
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      // إذا كانت الاستجابة ناجحة (201 Created)
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Success'),
+          content: Text('Data submitted successfully!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => OtpScreen()),
+                );
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      // التعامل مع الأخطاء إذا كانت الاستجابة غير ناجحة
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Error'),
+          content: Text('Failed to submit data: ${response.reasonPhrase}'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  } catch (error) {
+    print(error);
+    // التعامل مع الأخطاء
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Error'),
+        content: Text('An error occurred: $error'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
   @override
   Widget build(BuildContext context) {
-    String? selectedCity;
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -51,6 +133,7 @@ class FirstFormScreen extends StatelessWidget {
             ),
             SizedBox(height: 40),
             TextField(
+              controller: nameController,
               decoration: InputDecoration(
                 labelText: 'Name',
                 labelStyle: TextStyle(fontSize: 14),
@@ -66,6 +149,7 @@ class FirstFormScreen extends StatelessWidget {
             ),
             SizedBox(height: 15),
             TextField(
+              controller: phoneController,
               decoration: InputDecoration(
                 labelText: 'Phone Number',
                 labelStyle: TextStyle(fontSize: 14),
@@ -81,6 +165,7 @@ class FirstFormScreen extends StatelessWidget {
             ),
             SizedBox(height: 15),
             TextField(
+              controller: emailController,
               decoration: InputDecoration(
                 labelText: 'Email Address',
                 labelStyle: TextStyle(fontSize: 14),
@@ -118,14 +203,14 @@ class FirstFormScreen extends StatelessWidget {
                 );
               }).toList(),
               onChanged: (newCity) {
-                selectedCity = newCity;
+                setState(() {
+                  selectedCity = newCity;
+                });
               },
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                print("Continue pressed");
-              },
+              onPressed: submitData,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 150),

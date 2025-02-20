@@ -84,8 +84,12 @@ class _MidRangePageState extends State<MidRangePage> {
               return CarCard(
                 imageUrl: cars[index].imageUrl,
                 title: cars[index].name,
-                description: cars[index].model,
-                price: '${cars[index].dailyPrice} AED / Daily',
+                model: cars[index].model,
+                price: '${cars[index].dailyPrice}',
+                weeklyPrice: '${cars[index].weeklyPrice}',
+                monthlyPrice: '${cars[index].monthlyPrice}',
+                description: cars[index].description,
+
               );
             },
           );

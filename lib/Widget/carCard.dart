@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:luxuria_rentl_app/Screens/car-details.dart'; 
+import 'package:luxuria_rentl_app/Screens/car-details.dart';
 
 class CarCard extends StatelessWidget {
   final String imageUrl;
   final String title;
-  final String description;
-  final String price;
-  final bool showDescription; 
+  final String model;
+  final String price; // السعر اليومي فقط
+  final String weeklyPrice; // السعر الأسبوعي
+  final String monthlyPrice;
+  final String description; // السعر الشهري
+
   const CarCard({
     Key? key,
     required this.imageUrl,
     required this.title,
-    required this.description,
+    required this.model,
     required this.price,
-    this.showDescription = true, 
+    required this.weeklyPrice, // إضافة السعر الأسبوعي
+    required this.monthlyPrice,
+    required this.description, // إضافة السعر الشهري
   }) : super(key: key);
 
   @override
@@ -26,8 +31,12 @@ class CarCard extends StatelessWidget {
             builder: (context) => CarDetailsScreen(
               imageUrl: imageUrl,
               title: title,
+              model: model,
+              price: price, // تمرير السعر اليومي فقط
+              weeklyPrice: weeklyPrice, // تمرير السعر الأسبوعي
+              monthlyPrice: monthlyPrice,
               description: description,
-              price: price,
+ // تمرير السعر الشهري
             ),
           ),
         );
@@ -59,16 +68,15 @@ class CarCard extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: 0),
-                            if (showDescription) 
-                              Text(
-                                description,
-                                style: TextStyle(
-                                  color: Colors.grey[700],
-                                ),
+                            Text(
+                              model,
+                              style: TextStyle(
+                                color: Colors.grey[700],
                               ),
+                            ),
                             SizedBox(height: 20),
                             Text(
-                              price,
+                              price, // عرض السعر اليومي
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.black,
@@ -80,29 +88,28 @@ class CarCard extends StatelessWidget {
                       ),
                     ),
                     Container(
-                    margin: EdgeInsets.only(right: 15),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(10),
-                        bottomRight: Radius.circular(10),
-                      ),
-                      child: Image.network(
-                        imageUrl,
-                        width: 175,
-                        height: 130,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            'assets/images/carDemo.png', 
-                            width: 157,
-                            height: 130,
-                            fit: BoxFit.cover,
-                          );
-                        },
+                      margin: EdgeInsets.only(right: 15),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
+                        ),
+                        child: Image.network(
+                          imageUrl,
+                          width: 175,
+                          height: 130,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              'assets/images/carDemo.png', 
+                              width: 157,
+                              height: 130,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        ),
                       ),
                     ),
-                  ),
-
                   ],
                 ),
               ),

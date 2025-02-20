@@ -7,13 +7,13 @@ class IntroScreen extends StatelessWidget {
       backgroundColor: Colors.black, // تحديد الخلفية السوداء
       body: Stack(
         children: <Widget>[
-          // الصورة التي سيتم تصغيرها وتوسيطها في منتصف الشاشة
+          // عرض صورة GIF بدلاً من الصورة الثابتة
           Align(
             alignment: Alignment.center, // لضمان أن الصورة في منتصف الشاشة
             child: Image.asset(
-              'assets/images/luxuria-logo.jpg', // مسار الصورة في مجلد assets
-              width: 200,  // تحديد العرض
-              height: 200, // تحديد الارتفاع
+              'assets/images/logo-gif.gif', // ضع ملف الـ GIF في assets
+              width: 500,  // تحديد العرض
+              height: 500, // تحديد الارتفاع
               fit: BoxFit.contain, // الحفاظ على نسبة العرض إلى الارتفاع
             ),
           ),

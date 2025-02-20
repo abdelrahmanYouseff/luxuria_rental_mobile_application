@@ -91,8 +91,11 @@ class _LuxuryCarsPageState extends State<LuxuryCarsPage> {
                       builder: (context) => CarDetailsScreen(
                         imageUrl: cars[index].imageUrl,
                         title: cars[index].name,
-                        price: '${cars[index].dailyPrice} AED / Daily',
-                        description: cars[index].model,
+                        price: '${cars[index].dailyPrice}',
+                        model: cars[index].model,
+                        weeklyPrice: '${cars[index].weeklyPrice}',
+                        monthlyPrice: '${cars[index].monthlyPrice}',
+                        description: cars[index].description,
                       ),
                     ),
                   );
@@ -100,8 +103,13 @@ class _LuxuryCarsPageState extends State<LuxuryCarsPage> {
                 child: CarCard(
                   imageUrl: cars[index].imageUrl,
                   title: cars[index].name,
-                  description: cars[index].model,
-                  price: '${cars[index].dailyPrice} AED / Daily',
+                  model: cars[index].model,
+                  price: '${cars[index].dailyPrice}',
+                  weeklyPrice: '${cars[index].weeklyPrice}',
+                  monthlyPrice: '${cars[index].monthlyPrice}',
+                  description: cars[index].description,
+
+
                 ),
               );
             },
