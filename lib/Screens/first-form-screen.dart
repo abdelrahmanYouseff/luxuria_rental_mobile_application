@@ -1,10 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert'; // لإستخدام jsonEncode
-import 'package:luxuria_rentl_app/Widget/custom_bottom_nav_bar.dart'; 
-import 'package:luxuria_rentl_app/Screens/otp-screen.dart';
+import 'package:luxuria_rentl_app/Screens/second-form-screen.dart';
+import 'package:luxuria_rentl_app/Widget/custom_bottom_nav_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FirstFormScreen extends StatefulWidget {
+  final String imageUrl;
+  final String title;
+  final String price;
+  final String model;
+  final String description;
+  final String weeklyPrice; 
+  final String monthlyPrice; 
+  final String plateNumber;
+
+  const FirstFormScreen({
+    Key? key,
+    required this.imageUrl,
+    required this.title,
+    required this.price,
+    required this.model,
+    required this.description,
+    required this.weeklyPrice,
+    required this.monthlyPrice, 
+    required this.plateNumber,
+  }) : super(key: key);
+
   @override
   _FirstFormScreenState createState() => _FirstFormScreenState();
 }
@@ -15,76 +35,18 @@ class _FirstFormScreenState extends State<FirstFormScreen> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
 
-Future<void> submitData() async {
-  final url = 'http://rentluxuria.com/api/users'; // تأكد من استخدام الرابط الصحيح
-  try {
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'name': nameController.text,
-        'phone_number': phoneController.text,
-        'email_address': emailController.text,
-        'pickup_city': selectedCity,
-      }),
-    );
-
-    if (response.statusCode == 201) {
-      // إذا كانت الاستجابة ناجحة (201 Created)
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Success'),
-          content: Text('Data submitted successfully!'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => OtpScreen()),
-                );
-              },
-              child: Text('OK'),
-            ),
-          ],
-        ),
-      );
-    } else {
-      // التعامل مع الأخطاء إذا كانت الاستجابة غير ناجحة
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Error'),
-          content: Text('Failed to submit data: ${response.reasonPhrase}'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('OK'),
-            ),
-          ],
-        ),
-      );
-    }
-  } catch (error) {
-    print(error);
-    // التعامل مع الأخطاء
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Error'),
-        content: Text('An error occurred: $error'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('OK'),
-          ),
-        ],
-      ),
-    );
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData(); // استدعاء دالة تحميل بيانات المستخدم
   }
-}
 
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    nameController.text = prefs.getString('user_name') ?? ''; // استرجاع اسم المستخدم
+    phoneController.text = prefs.getString('user_phone') ?? ''; // استرجاع رقم الهاتف
+    emailController.text = prefs.getString('user_email') ?? ''; // استرجاع البريد الإلكتروني
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,109 +86,90 @@ Future<void> submitData() async {
             SizedBox(height: 20),
             Text(
               "We need few information to start.",
-              style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 5),
-            Text(
-              "Experience our luxurious cars today with quick delivery!",
-              style: TextStyle(fontSize: 11, color: Colors.black),
-            ),
-            SizedBox(height: 40),
+            SizedBox(height: 20),
             TextField(
               controller: nameController,
               decoration: InputDecoration(
-                labelText: 'Name',
-                labelStyle: TextStyle(fontSize: 14),
-                fillColor: Color(0xFFF3F3F3),
-                filled: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                isDense: true,
+                labelText: 'Full Name',
+                border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 15),
+            SizedBox(height: 10),
             TextField(
               controller: phoneController,
               decoration: InputDecoration(
                 labelText: 'Phone Number',
-                labelStyle: TextStyle(fontSize: 14),
-                fillColor: Color(0xFFF3F3F3),
-                filled: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                isDense: true,
+                border: OutlineInputBorder(),
               ),
+              keyboardType: TextInputType.phone,
             ),
-            SizedBox(height: 15),
+            SizedBox(height: 10),
             TextField(
               controller: emailController,
               decoration: InputDecoration(
                 labelText: 'Email Address',
-                labelStyle: TextStyle(fontSize: 14),
-                fillColor: Color(0xFFF3F3F3),
-                filled: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                isDense: true,
+                border: OutlineInputBorder(),
               ),
+              keyboardType: TextInputType.emailAddress,
             ),
             SizedBox(height: 20),
-            DropdownButtonFormField<String>(
+            DropdownButton<String>(
               value: selectedCity,
-              decoration: InputDecoration(
-                labelText: 'Pickup City',
-                labelStyle: TextStyle(fontSize: 14),
-                fillColor: Color(0xFFF3F3F3),
-                filled: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                isDense: true,
-              ),
-              items: [
-                'Dubai', 'Sharjah', 'Ajman', 'AlAin'
-              ].map((city) {
+              hint: Text('Select City'),
+              isExpanded: true,
+              items: <String>[
+                'Dubai',
+                'Sharjah',
+                'Abu Dhabi',
+                'Al Ain',
+                'Ajman',
+              ].map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
-                  value: city,
-                  child: Text(city),
+                  value: value,
+                  child: Text(value),
                 );
               }).toList(),
-              onChanged: (newCity) {
+              onChanged: (String? newValue) {
                 setState(() {
-                  selectedCity = newCity;
+                  selectedCity = newValue;
                 });
               },
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: submitData,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 150),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                backgroundColor: Colors.black, 
+                minimumSize: Size(double.infinity, 50), 
               ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SecondFormScreen(
+                      imageUrl: widget.imageUrl,
+                      title: widget.title,
+                      price: widget.price,
+                      model: widget.model,
+                      description: widget.description,
+                      weeklyPrice: widget.weeklyPrice,
+                      monthlyPrice: widget.monthlyPrice,
+                      plateNumber: widget.plateNumber,
+                    ),
+                  ),
+                );
+              },
               child: Text(
                 'Continue',
-                style: TextStyle(color: Colors.white, fontSize: 16),
-              ),
+                    style: TextStyle(color: Colors.white), 
+                    ),
             ),
+
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(
+       bottomNavigationBar: CustomBottomNavBar(
         selectedIndex: 1,
         onTap: (index) {},
       ),

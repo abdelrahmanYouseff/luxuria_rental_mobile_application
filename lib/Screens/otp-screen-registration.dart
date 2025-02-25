@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:luxuria_rentl_app/Widget/custom_bottom_nav_bar.dart';
-import 'package:luxuria_rentl_app/Screens/second-form-screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luxuria_rentl_app/Screens/home_screen.dart'; 
+import 'package:luxuria_rentl_app/Screens/registration-user-screen.dart';
+
 
 class OtpScreen extends StatelessWidget {
   OtpScreen({super.key});
@@ -27,7 +30,7 @@ class OtpScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 30), // مسافة بين الـ AppBar والمحتوى
+          padding: const EdgeInsets.only(top: 30),
           child: Column(
             children: [
               const Text(
@@ -68,7 +71,6 @@ class OtpScreen extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // نص تأكيد إرسال الكود
               const Text(
                 "An OTP Code was sent to *6235",
                 style: TextStyle(fontSize: 14, color: Colors.grey),
@@ -76,10 +78,8 @@ class OtpScreen extends StatelessWidget {
 
               const SizedBox(height: 10),
 
-              // زر إعادة إرسال OTP
               TextButton(
                 onPressed: () {
-                  // TODO: تنفيذ منطق إعادة إرسال الكود
                   print("Resend OTP");
                 },
                 child: const Text(
@@ -94,33 +94,53 @@ class OtpScreen extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // زر المتابعة
               ElevatedButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => SecondFormScreen()),
-    );
-  },
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.black,
-    padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 135),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
-    ),
-  ),
-  child: const Text(
-    'Continue',
-    style: TextStyle(color: Colors.white, fontSize: 16),
-  ),
-),
+                onPressed: () async {
+                  String otp = _controllers.map((controller) => controller.text).join();
+                  
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
+                  if (isLoggedIn) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                    );
+                  } else {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegistrationUserScreen()),
+                    );
+                  }
+
+                  if (otp == "0000") {
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Invalid OTP. Please try again."),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 135),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Text(
+                  'Continue',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
             ],
           ),
         ),
       ),
       bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: 2, 
+        selectedIndex: 2,
         onTap: (index) {},
       ),
     );

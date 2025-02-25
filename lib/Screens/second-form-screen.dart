@@ -1,7 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:luxuria_rentl_app/Widget/custom_bottom_nav_bar.dart';
+import 'package:luxuria_rentl_app/Screens/success-screen.dart';
 
 class SecondFormScreen extends StatefulWidget {
+  final String imageUrl;
+  final String title;
+  final String price;
+  final String model;
+  final String description;
+  final String weeklyPrice; 
+  final String monthlyPrice; 
+  final String plateNumber;
+
+  const SecondFormScreen({
+    Key? key,
+    required this.imageUrl,
+    required this.title,
+    required this.price,
+    required this.model,
+    required this.description,
+    required this.weeklyPrice,
+    required this.monthlyPrice,
+    required this.plateNumber,
+  }) : super(key: key);
+  
   @override
   _SecondFormScreenState createState() => _SecondFormScreenState();
 }
@@ -9,8 +31,8 @@ class SecondFormScreen extends StatefulWidget {
 class _SecondFormScreenState extends State<SecondFormScreen> {
   DateTime? selectedPickupDate;
   TimeOfDay? selectedPickupTime;
-  DateTime? selectedReturnDate; // إضافة متغير تاريخ العودة
-  TimeOfDay? selectedReturnTime; // إضافة متغير وقت العودة
+  DateTime? selectedReturnDate;
+  TimeOfDay? selectedReturnTime;
 
   Future<void> _selectPickupDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
@@ -67,6 +89,7 @@ class _SecondFormScreenState extends State<SecondFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -92,7 +115,7 @@ class _SecondFormScreenState extends State<SecondFormScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView( // إضافة Scroll View هنا
+      body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -102,8 +125,8 @@ class _SecondFormScreenState extends State<SecondFormScreen> {
               color: Colors.black,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
               alignment: Alignment.centerLeft,
-              child: const Text(
-                'Booking Form \nFor Your \nMercedes Benz E350 2025.',
+              child: Text(
+                'Booking Form For Your \n${widget.title} ${widget.model}.',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 25,
@@ -111,8 +134,8 @@ class _SecondFormScreenState extends State<SecondFormScreen> {
               ),
             ),
             SizedBox(height: 20),
-            Image.asset(
-              'assets/images/carDemo.png',
+            Image.network(
+              widget.imageUrl,
               width: double.infinity,
               height: 210,
               fit: BoxFit.cover,
@@ -169,7 +192,7 @@ class _SecondFormScreenState extends State<SecondFormScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20), // فاصل بين تواريخ الحجز
+                  SizedBox(height: 20),
                   Text(
                     'Return Date',
                     style: TextStyle(
@@ -219,16 +242,35 @@ class _SecondFormScreenState extends State<SecondFormScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 30), // إضافة مسافة أسفل المحتوى
+            SizedBox(height: 30),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ElevatedButton(
-                onPressed: () {
-                  // هنا يمكنك إضافة الوظيفة الخاصة بك عند الضغط على زر Continue
+                onPressed: () async {
+                  // عرض شاشة تحميل
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false, // منع الإغلاق عند الضغط في أي مكان
+                    builder: (context) {
+                      return Center(child: CircularProgressIndicator());
+                    },
+                  );
+
+                  // الانتظار لفترة محددة (مثل 2 ثانية)
+                  await Future.delayed(Duration(seconds: 2));
+
+                  // إغلاق شاشة التحميل
+                  Navigator.of(context).pop();
+
+                  // الانتقال إلى صفحة النجاح
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SuccessScreen()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black, // لون الزر
-                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 150),
+                  backgroundColor: Colors.black,
+                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 135),
                 ),
                 child: Text(
                   'Continue',
@@ -236,7 +278,7 @@ class _SecondFormScreenState extends State<SecondFormScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 20), // فاصل بين الزر والمحتوى
+            SizedBox(height: 20), 
           ],
         ),
       ),

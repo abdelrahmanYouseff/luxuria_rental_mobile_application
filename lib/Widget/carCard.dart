@@ -8,7 +8,8 @@ class CarCard extends StatelessWidget {
   final String price; // السعر اليومي فقط
   final String weeklyPrice; // السعر الأسبوعي
   final String monthlyPrice;
-  final String description; // السعر الشهري
+  final String description;
+  final String plateNumber;// السعر الشهري
 
   const CarCard({
     Key? key,
@@ -18,7 +19,8 @@ class CarCard extends StatelessWidget {
     required this.price,
     required this.weeklyPrice, // إضافة السعر الأسبوعي
     required this.monthlyPrice,
-    required this.description, // إضافة السعر الشهري
+    required this.description,
+    required this.plateNumber, // إضافة السعر الشهري
   }) : super(key: key);
 
   @override
@@ -36,6 +38,7 @@ class CarCard extends StatelessWidget {
               weeklyPrice: weeklyPrice, // تمرير السعر الأسبوعي
               monthlyPrice: monthlyPrice,
               description: description,
+              plateNumber: plateNumber,
  // تمرير السعر الشهري
             ),
           ),

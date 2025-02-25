@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:luxuria_rentl_app/Widget/custom_bottom_nav_bar.dart';
+
 
 class SuccessScreen extends StatelessWidget {
   @override
@@ -34,13 +36,17 @@ class SuccessScreen extends StatelessWidget {
             SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                // يمكنك إضافة دالة للعودة إلى الشاشة السابقة أو الرئيسية
-                Navigator.pop(context);
+                // الانتقال إلى صفحة هوم
+                Navigator.pushReplacementNamed(context, '/home');
               },
-              child: Text('Go Back'),
+              child: Text('Go Home'),
             ),
           ],
         ),
+      ),
+       bottomNavigationBar: CustomBottomNavBar(
+        selectedIndex: 1,
+        onTap: (index) {},
       ),
     );
   }

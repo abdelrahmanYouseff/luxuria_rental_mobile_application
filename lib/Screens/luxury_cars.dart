@@ -96,6 +96,7 @@ class _LuxuryCarsPageState extends State<LuxuryCarsPage> {
                         weeklyPrice: '${cars[index].weeklyPrice}',
                         monthlyPrice: '${cars[index].monthlyPrice}',
                         description: cars[index].description,
+                        plateNumber: cars[index].plate_number,
                       ),
                     ),
                   );
@@ -108,6 +109,7 @@ class _LuxuryCarsPageState extends State<LuxuryCarsPage> {
                   weeklyPrice: '${cars[index].weeklyPrice}',
                   monthlyPrice: '${cars[index].monthlyPrice}',
                   description: cars[index].description,
+                  plateNumber: cars[index].plate_number,
 
 
                 ),

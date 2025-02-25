@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:luxuria_rentl_app/Widget/custom_bottom_nav_bar.dart'; 
-import 'package:luxuria_rentl_app/Screens/first-form-screen.dart'; // تأكد من استيراد صفحة FirstFormScreen
+import 'package:luxuria_rentl_app/Widget/custom_bottom_nav_bar.dart';
+import 'package:luxuria_rentl_app/Screens/first-form-screen.dart';
+import 'package:luxuria_rentl_app/Screens/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CarDetailsScreen extends StatelessWidget {
   final String imageUrl;
@@ -8,8 +10,9 @@ class CarDetailsScreen extends StatelessWidget {
   final String price;
   final String model;
   final String description;
-  final String weeklyPrice; // السعر الأسبوعي
-  final String monthlyPrice; // السعر الشهري
+  final String weeklyPrice; 
+  final String monthlyPrice; 
+  final String plateNumber; // إضافة رقم اللوحة
 
   const CarDetailsScreen({
     Key? key,
@@ -18,9 +21,15 @@ class CarDetailsScreen extends StatelessWidget {
     required this.price,
     required this.model,
     required this.description,
-    required this.weeklyPrice, // إضافة السعر الأسبوعي
-    required this.monthlyPrice,// إضافة السعر الشهري
+    required this.weeklyPrice,
+    required this.monthlyPrice,
+    required this.plateNumber, // إضافة رقم اللوحة كوسيلة تمرير
   }) : super(key: key);
+
+  Future<bool> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isLoggedIn') ?? false; // استخدام 'isLoggedIn' كمفتاح
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,19 +65,6 @@ class CarDetailsScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 250,
                 fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
-                          : null,
-                    ),
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return Center(child: Icon(Icons.error));
-                },
               ),
             ),
             SizedBox(height: 20),
@@ -114,14 +110,42 @@ class CarDetailsScreen extends StatelessWidget {
               description,
               style: TextStyle(fontSize: 14, color: Colors.black54),
             ),
+            SizedBox(height: 20),
+            Text(
+              "Plate Number: $plateNumber", // عرض رقم اللوحة
+              style: TextStyle(fontSize: 14, color: Colors.black54),
+            ),
             SizedBox(height: 30),
             ElevatedButton(
-              onPressed: () {
-                // الانتقال إلى صفحة FirstFormScreen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FirstFormScreen()),
-                );
+              onPressed: () async {
+                bool isLoggedIn = await _checkLoginStatus(); // تحقق من حالة تسجيل الدخول
+
+                if (isLoggedIn) { // تحقق مما إذا كان المستخدم قد سجل الدخول
+                  // الانتقال إلى صفحة FirstFormScreen مع تمرير بيانات السيارة
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FirstFormScreen(
+                        imageUrl: imageUrl,
+                        title: title,
+                        price: price,
+                        model: model,
+                        description: description,
+                        weeklyPrice: weeklyPrice,
+                        monthlyPrice: monthlyPrice,
+                        plateNumber: plateNumber, // تمرير رقم اللوحة
+                      ),
+                    ),
+                  );
+                } else {
+                  // توجيه المستخدم إلى صفحة تسجيل الدخول
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginScreen(), // استبدل بـ Widget تسجيل الدخول الخاص بك
+                    ),
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
@@ -132,11 +156,15 @@ class CarDetailsScreen extends StatelessWidget {
               ),
               child: Text(
                 'Book Now',
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                style: TextStyle(color: Colors.white, fontSize: 11),
               ),
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        selectedIndex: 1,
+        onTap: (index) {},
       ),
     );
   }
