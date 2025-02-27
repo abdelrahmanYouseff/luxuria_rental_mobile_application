@@ -56,15 +56,24 @@ class _PrePaymentPageState extends State<PrePaymentPage> {
     _calculateTotalAmount(); // Calculate the total amount based on total days
   }
 
-  Future<void> _loadUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      fullName = prefs.getString('user_name') ?? '';
-      phoneNumber = prefs.getString('user_phone') ?? '';
-      emailAddress = prefs.getString('user_email') ?? '';
-      pickupCity = prefs.getString('pickup_city') ?? '';
-    });
-  }
+Future<void> _loadUserData() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  setState(() {
+    fullName = prefs.getString('user_name') ?? '';
+    phoneNumber = prefs.getString('user_phone') ?? '';
+    emailAddress = prefs.getString('user_email') ?? '';
+    pickupCity = prefs.getString('pickup_city') ?? '';
+    // إضافة السطر التالي للحصول على userID
+    String userID = prefs.getString('user_id') ?? '';
+    
+    // التحقق من قيمة userID
+    if (userID.isNotEmpty) {
+      print("User ID: $userID");
+    } else {
+      print("User ID not found in SharedPreferences.");
+    }
+  });
+}
 
   void _calculateTotalDays() {
     if (widget.pickupDate != null && widget.returnDate != null) {
@@ -218,57 +227,64 @@ class _PrePaymentPageState extends State<PrePaymentPage> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                 onPressed: () async {
-  try {
-    // إرسال الطلب لإنشاء جلسة الدفع
-    final response = await http.post(
-      Uri.parse('https://rentluxuria.com/api/create-checkout-session'),
-      body: {
-        'total_amount': totalAmount.toString(),
-      },
-    );
+          Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+  child: SizedBox(
+    width: double.infinity,
+    child: ElevatedButton(
+      onPressed: () async {
+        try {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          String userID = prefs.getString('user_id') ?? '';
 
-    if (response.statusCode == 200) {
-      final jsonResponse = json.decode(response.body);
-      
-      // استرجاع checkout_url مباشرة من الاستجابة
-      final checkoutUrl = jsonResponse['checkout_url'];
+          // إرسال الطلب لإنشاء جلسة الدفع
+          final response = await http.post(
+            Uri.parse('https://rentluxuria.com/api/create-checkout-session'),
+            body: {
+              'userID': userID,
+              'pickupDate': DateFormat('yyyy-MM-dd').format(widget.pickupDate!),
+              'returnDate': DateFormat('yyyy-MM-dd').format(widget.returnDate!),
+              'totalDays': totalDays.toString(),
+              'carPlateNumber': widget.plateNumber,
+              'total_amount': totalAmount.toString(),
+            },
+          );
 
-      if (checkoutUrl != null) {
-        // توجيه المستخدم إلى صفحة CheckoutPage
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CheckoutPage(checkoutUrl: checkoutUrl),
-          ),
-        );
-      } else {
-        print('Error: checkout_url not found in response');
-      }
-    } else {
-      print('Error: ${response.statusCode} ${response.body}');
-    }
-  } catch (e) {
-    print('Exception occurred: $e');
-  }
-},
+          if (response.statusCode == 200) {
+            final jsonResponse = json.decode(response.body);
+            
+            // استرجاع checkout_url مباشرة من الاستجابة
+            final checkoutUrl = jsonResponse['checkout_url'];
 
-
-                  child: Text(
-                    "Checkout",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 15), backgroundColor: Colors.black,
-                  ),
+            if (checkoutUrl != null) {
+              // توجيه المستخدم إلى صفحة CheckoutPage
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CheckoutPage(checkoutUrl: checkoutUrl),
                 ),
-              ),
-            ),
+              );
+            } else {
+              print('Error: checkout_url not found in response');
+            }
+          } else {
+            print('Error: ${response.statusCode} ${response.body}');
+          }
+        } catch (e) {
+          print('Exception occurred: $e');
+        }
+      },
+      child: Text(
+        "Checkout",
+        style: TextStyle(color: Colors.white),
+      ),
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.symmetric(vertical: 15), backgroundColor: Colors.black,
+      ),
+    ),
+  ),
+),
+
             SizedBox(height: 20),
           ],
         ),

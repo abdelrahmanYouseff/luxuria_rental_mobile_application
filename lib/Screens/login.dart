@@ -37,6 +37,8 @@ class LoginScreen extends StatelessWidget {
             await prefs.setString('user_phone', data['user']['phone_number']);
             await prefs.setString('user_email', data['user']['email_address']);
             await prefs.setString('pickup_city', data['user']['pickup_city']);
+            // حفظ userID
+            await prefs.setString('user_id', data['user']['id'].toString()); // تأكد أن id موجود في الاستجابة
 
             // توجيه المستخدم إلى الصفحة الرئيسية بعد نجاح تسجيل الدخول
             Navigator.pushReplacement(
