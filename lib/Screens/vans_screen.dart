@@ -85,7 +85,7 @@ class _VansPageState extends State<VansPage> {
                 imageUrl: cars[index].imageUrl,
                 title: cars[index].name,
                 model: cars[index].model,
-                price: '${cars[index].dailyPrice}',
+                price: '${cars[index].dailyPrice} AED',
                 weeklyPrice: '${cars[index].weeklyPrice}',
                 monthlyPrice: '${cars[index].monthlyPrice}',
                 description: cars[index].description,

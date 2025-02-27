@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/home/abdelrahman/Desktop/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/abdelrahman/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/abdelrahman/Desktop/luxuria_mobile_app/luxuria_rentl_app/android/app/.cxx/Debug/6w2p291y/x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/abdelrahman/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/abdelrahman/Desktop/luxuria_mobile_app/luxuria_rentl_app/android/app/.cxx/Debug/6w2p291y/x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

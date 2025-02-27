@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http; // استيراد مكتبة http
+import 'dart:convert'; // لاستعمال jsonDecode
 import 'package:luxuria_rentl_app/Widget/custom_bottom_nav_bar.dart';
-import 'package:luxuria_rentl_app/Screens/success-screen.dart';
+import 'package:luxuria_rentl_app/Screens/prepayment.dart';
 
 class SecondFormScreen extends StatefulWidget {
   final String imageUrl;
@@ -85,6 +87,29 @@ class _SecondFormScreenState extends State<SecondFormScreen> {
       });
     }
   }
+
+Future<bool> checkVehicleAvailability(String plateNumber) async {
+  final response = await http.post(
+    Uri.parse('https://rentluxuria.com/api/check-vehicle-availability'),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({'plate_number': plateNumber}),
+  );
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+    if (data['status'] == true && data['message'] == 'Vehicle is available') {
+      print('Car is Available');
+      return true; // السيارة متاحة
+    } else {
+      print('Car is not available');
+      return false; // السيارة غير متاحة
+    }
+  } else {
+    print('حدث خطأ أثناء التحقق من التوافر: ${response.statusCode}');
+    return false; // في حالة حدوث خطأ
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -246,28 +271,48 @@ class _SecondFormScreenState extends State<SecondFormScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ElevatedButton(
-                onPressed: () async {
-                  // عرض شاشة تحميل
-                  showDialog(
-                    context: context,
-                    barrierDismissible: false, // منع الإغلاق عند الضغط في أي مكان
-                    builder: (context) {
-                      return Center(child: CircularProgressIndicator());
-                    },
-                  );
-
-                  // الانتظار لفترة محددة (مثل 2 ثانية)
-                  await Future.delayed(Duration(seconds: 2));
-
-                  // إغلاق شاشة التحميل
-                  Navigator.of(context).pop();
-
-                  // الانتقال إلى صفحة النجاح
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SuccessScreen()),
-                  );
+               onPressed: () async {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) {
+                  return Center(child: CircularProgressIndicator());
                 },
+              );
+
+              // تحقق من توافر السيارة
+              bool isAvailable = await checkVehicleAvailability(widget.plateNumber);
+
+              // إغلاق الحوار بعد انتهاء التحقق
+              Navigator.of(context).pop();
+
+              // إذا كانت السيارة متاحة، انتقل إلى صفحة الدفع
+              if (isAvailable) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                  builder: (context) => PrePaymentPage(
+                    imageUrl: widget.imageUrl,
+                    title: widget.title,
+                    price: widget.price,
+                    model: widget.model,
+                    description: widget.description,
+                    weeklyPrice: widget.weeklyPrice,
+                    monthlyPrice: widget.monthlyPrice,
+                    plateNumber: widget.plateNumber,
+                    pickupDate: selectedPickupDate,
+                    pickupTime: selectedPickupTime,
+                    returnDate: selectedReturnDate,
+                    returnTime: selectedReturnTime,
+                  )
+                ));
+              } else {
+                // يمكنك إظهار رسالة للمستخدم عن عدم توفر السيارة هنا
+                print('Car is not available');
+              }
+            },
+
+
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
                   padding: EdgeInsets.symmetric(vertical: 15, horizontal: 135),

@@ -1,0 +1,2 @@
+/home/abdelrahman/Desktop/luxuria_mobile_app/luxuria_rentl_app/android/app/.cxx/RelWithDebInfo/5g6l47z3/armeabi-v7a/CMakeFiles/edit_cache.dir
+/home/abdelrahman/Desktop/luxuria_mobile_app/luxuria_rentl_app/android/app/.cxx/RelWithDebInfo/5g6l47z3/armeabi-v7a/CMakeFiles/rebuild_cache.dir
