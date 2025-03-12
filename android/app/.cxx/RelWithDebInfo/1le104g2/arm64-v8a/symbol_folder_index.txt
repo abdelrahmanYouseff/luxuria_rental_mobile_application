@@ -1,0 +1,1 @@
+/home/abdelrahman/Desktop/luxuria_mobile_app/luxuria_rentl_app/build/app/intermediates/cxx/RelWithDebInfo/1le104g2/obj/arm64-v8a

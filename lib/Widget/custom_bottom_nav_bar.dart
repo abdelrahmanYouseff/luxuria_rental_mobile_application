@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luxuria_rentl_app/Screens/bookings.dart';
 import 'package:luxuria_rentl_app/Screens/home_screen.dart';
 import 'package:luxuria_rentl_app/Screens/more_screen.dart';
 import 'package:luxuria_rentl_app/Screens/offers_screen.dart';
@@ -49,6 +50,8 @@ class CustomBottomNavBar extends StatelessWidget {
       case 0:
         screen = HomeScreen();
         break;
+      case 1: 
+        screen = BookingsPage();
       case 3:
         screen = OfferScreen();
         break;

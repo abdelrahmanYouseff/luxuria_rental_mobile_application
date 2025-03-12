@@ -3,6 +3,7 @@ import 'package:luxuria_rentl_app/Widget/custom_bottom_nav_bar.dart';
 import 'package:luxuria_rentl_app/Screens/home_screen.dart'; 
 import 'package:luxuria_rentl_app/Screens/login.dart';
 import 'package:luxuria_rentl_app/Screens/profile-edit-screen.dart'; 
+import 'package:luxuria_rentl_app/Screens/invoice_screen.dart'; // استيراد الصفحة الجديدة
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -50,7 +51,7 @@ class ProfileScreen extends StatelessWidget {
         future: _isLoggedIn(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator()); // يظهر مؤشر تحميل
+            return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasData && snapshot.data == true) {
             return Padding(
               padding: const EdgeInsets.all(16.0),
@@ -90,44 +91,58 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
-  style: ElevatedButton.styleFrom(
-    minimumSize: Size(double.infinity, 50),
-    backgroundColor: Colors.red,
-  ),
-  onPressed: () async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    
-    // مسح البيانات المرتبطة بالمستخدم
-    await prefs.remove('isLoggedIn'); 
-    await prefs.remove('user_name'); 
-    await prefs.remove('user_phone'); 
-    await prefs.remove('user_email'); 
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(double.infinity, 50), 
+                      backgroundColor: Colors.black,
+                    ),
+                    onPressed: () {
+                      // هنا نقوم بتوجيه المستخدم إلى صفحة الفواتير
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => InvoiceScreen()), // تغيير إلى InvoiceScreen
+                      );
+                    },
+                    child: const Text(
+                      'My Invoices',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(double.infinity, 50),
+                      backgroundColor: Colors.red,
+                    ),
+                    onPressed: () async {
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      
+                      await prefs.remove('isLoggedIn'); 
+                      await prefs.remove('user_name'); 
+                      await prefs.remove('user_phone'); 
+                      await prefs.remove('user_email'); 
 
-    // إعادة توجيه المستخدم إلى شاشة تسجيل الدخول
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
-      (route) => false, 
-    );
-  },
-  child: const Text(
-    'Sign Out',
-    style: TextStyle(fontSize: 16, color: Colors.white),
-  ),
-),
-
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LoginScreen()),
+                        (route) => false, 
+                      );
+                    },
+                    child: const Text(
+                      'Sign Out',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
                 ],
               ),
             );
           } else {
-            // إذا لم يكن المستخدم قد سجل الدخول، إعادة توجيهه إلى صفحة تسجيل الدخول
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const LoginScreen()),
               );
             });
-            return Container(); // يمكنك إظهار صفحة فارغة أو مؤشر تحميل
+            return Container();
           }
         },
       ),

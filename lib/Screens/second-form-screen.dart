@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http; // استيراد مكتبة http
+import 'package:intl/intl.dart';
 import 'dart:convert'; // لاستعمال jsonDecode
 import 'package:luxuria_rentl_app/Widget/custom_bottom_nav_bar.dart';
 import 'package:luxuria_rentl_app/Screens/prepayment.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // استيراد مكتبة SharedPreferences
 
 class SecondFormScreen extends StatefulWidget {
   final String imageUrl;
@@ -10,9 +12,13 @@ class SecondFormScreen extends StatefulWidget {
   final String price;
   final String model;
   final String description;
-  final String weeklyPrice; 
-  final String monthlyPrice; 
+  final String weeklyPrice;
+  final String monthlyPrice;
   final String plateNumber;
+  final String? pickupDate; // تاريخ الاستلام
+  final String? pickupTime; // وقت الاستلام
+  final String? returnDate; // تاريخ الإرجاع
+  final String? returnTime; // وقت الإرجاع
 
   const SecondFormScreen({
     Key? key,
@@ -24,6 +30,10 @@ class SecondFormScreen extends StatefulWidget {
     required this.weeklyPrice,
     required this.monthlyPrice,
     required this.plateNumber,
+    this.pickupDate,
+    this.pickupTime,
+    this.returnDate,
+    this.returnTime,
   }) : super(key: key);
   
   @override
@@ -35,6 +45,28 @@ class _SecondFormScreenState extends State<SecondFormScreen> {
   TimeOfDay? selectedPickupTime;
   DateTime? selectedReturnDate;
   TimeOfDay? selectedReturnTime;
+
+  String? userId; 
+  String? userName; // متغير لتخزين اسم المستخدم
+  String? userEmail;
+  String? userPhone; // متغير لتخزين بريد المستخدم
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData(); // تحميل بيانات المستخدم عند بداية الشاشة
+  }
+
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userName = prefs.getString('username'); // استرجاع اسم المستخدم
+      userEmail = prefs.getString('email'); // استرجاع بريد المستخدم
+      userPhone = prefs.getString('user_phone');
+      userId = prefs.getString('user_id');
+
+    });
+  }
 
   Future<void> _selectPickupDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
@@ -88,27 +120,136 @@ class _SecondFormScreenState extends State<SecondFormScreen> {
     }
   }
 
-Future<bool> checkVehicleAvailability(String plateNumber) async {
+  Future<bool> checkVehicleAvailability(String plateNumber) async {
+    final response = await http.post(
+      Uri.parse('https://rentluxuria.com/api/check-vehicle-availability'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'plate_number': plateNumber}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data['status'] == true && data['message'] == 'Vehicle is available') {
+        print('Car is Available');
+        return true; 
+      } else {
+        print('Car is not available');
+        return false;
+      }
+    } else {
+      print('حدث خطأ أثناء التحقق من التوافر: ${response.statusCode}');
+      return false; 
+    }
+  }
+
+
+String formatTimeOfDay(TimeOfDay time) {
+  final hours = time.hour.toString().padLeft(2, '0');
+  final minutes = time.minute.toString().padLeft(2, '0');
+  return '$hours:$minutes:00'; // إضافة ":00" للتنسيق HH:mm:ss
+}
+
+
+Future<void> createBooking(String plateNumber) async {
+  final carsResponse = await http.get(Uri.parse('https://rentluxuria.com/api/cars'));
+
+  if (carsResponse.statusCode == 200) {
+    final Map<String, dynamic> responseData = jsonDecode(carsResponse.body);
+    final List<dynamic> cars = responseData['data']; 
+
+    int? carId;
+    for (var car in cars) {
+      if (car['plate_number'] == plateNumber) {
+        carId = car['id']; 
+        break; 
+      }
+    }
+
+    String formatDateTime(DateTime date, TimeOfDay time) {
+      final int hour = time.hour;
+      final int minute = time.minute;
+      
+      final dt = DateTime(date.year, date.month, date.day, hour, minute);
+      
+      return DateFormat('yyyy-MM-dd HH:mm:ss').format(dt);
+    }
+
+   if (carId != null) {
+  // طباعة القيم للتحقق
+
+  print('Formatted Pickup DateTime: ${formatDateTime(selectedPickupDate!, selectedPickupTime!)}');
+
   final response = await http.post(
-    Uri.parse('https://rentluxuria.com/api/check-vehicle-availability'),
+    Uri.parse('https://rentluxuria.com/api/bookings'),
     headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({'plate_number': plateNumber}),
+    body: jsonEncode({
+      'user_id': userId,
+      'car_id': carId,
+      'pickup_date': (selectedPickupDate != null && selectedPickupTime != null) 
+          ? formatDateTime(selectedPickupDate!, selectedPickupTime!) 
+          : null,
+      'return_date': (selectedReturnDate != null && selectedReturnTime != null) 
+          ? formatDateTime(selectedReturnDate!, selectedReturnTime!) 
+          : null,
+      'status': 'pending',
+    }),
   );
 
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    if (data['status'] == true && data['message'] == 'Vehicle is available') {
-      print('Car is Available');
-      return true; // السيارة متاحة
+   
+if (carId != null) {
+  final response = await http.post(
+    Uri.parse('https://rentluxuria.com/api/bookings'),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({
+      'user_id': userId,
+      'car_id': carId,
+      'pickup_date': (selectedPickupDate != null && selectedPickupTime != null) 
+          ? formatDateTime(selectedPickupDate!, selectedPickupTime!) 
+          : null,
+      'return_date': (selectedReturnDate != null && selectedReturnTime != null) 
+          ? formatDateTime(selectedReturnDate!, selectedReturnTime!) 
+          : null,
+      'status': 'pending',
+    }),
+  );
+
+  // طباعة كود الحالة
+  print('Response Status Code: ${response.statusCode}');
+
+  try {
+    final responseData = jsonDecode(response.body);
+    print('Response Body: $responseData'); // طباعة الرد بالكامل
+
+    if (response.statusCode == 201) {
+      final bookingId = responseData['booking_id'];
+
+      // تخزين الـ booking ID
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('bookingId', bookingId);
+
+      print('✅ Booked Successfully!');
+      print('Booking ID: $bookingId');
     } else {
-      print('Car is not available');
-      return false; // السيارة غير متاحة
+
+
+      // إذا كان هناك خطأ، طبع تفاصيله
+      print('❌ Booking Failed. Error: ${responseData['message'] ?? 'Unknown Error'}');
+      print('Formatted Pickup DateTime: ${formatDateTime(selectedPickupDate!, selectedPickupTime!)}');
+
     }
-  } else {
-    print('حدث خطأ أثناء التحقق من التوافر: ${response.statusCode}');
-    return false; // في حالة حدوث خطأ
+  } catch (e) {
+    print('🚨 Error decoding response: $e');
+    print('Response Body (Raw): ${response.body}');
   }
 }
+    } else {
+      print('Plate number not found.');
+    }
+  } else {
+    print('Failed to fetch cars: ${carsResponse.statusCode}');
+  }
+}
+
 
 
   @override
@@ -264,71 +405,56 @@ Future<bool> checkVehicleAvailability(String plateNumber) async {
                       ),
                     ],
                   ),
+                  SizedBox(height: 40),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (await checkVehicleAvailability(widget.plateNumber)) {
+                        // إذا كانت السيارة متاحة، انتقل إلى صفحة الدفع بعد إنشاء الحجز
+                        await createBooking(widget.plateNumber); // إنشاء الحجز
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PrePaymentPage(
+                              imageUrl: widget.imageUrl,
+                              title: widget.title,
+                              price: widget.price,
+                              model: widget.model,
+                              description: widget.description,
+                              weeklyPrice: widget.weeklyPrice,
+                              monthlyPrice: widget.monthlyPrice,
+                              plateNumber: widget.plateNumber,
+                              pickupDate: selectedPickupDate, // تمرير تاريخ الاستلام
+                              pickupTime: selectedPickupTime,   // تمرير وقت الاستلام
+                              returnDate: selectedReturnDate, // تمرير تاريخ الإرجاع
+                              returnTime: selectedReturnTime,    // تمرير وقت الإرجاع
+                            ),
+                          ),
+                        );
+
+                      } else {
+                        // عرض رسالة خطأ إذا كانت السيارة غير متاحة
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('The vehicle is not available.')),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    child: Text(
+                      'Continue to Payment',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                  ),
                 ],
               ),
             ),
-            SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: ElevatedButton(
-               onPressed: () async {
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) {
-                  return Center(child: CircularProgressIndicator());
-                },
-              );
-
-              // تحقق من توافر السيارة
-              bool isAvailable = await checkVehicleAvailability(widget.plateNumber);
-
-              // إغلاق الحوار بعد انتهاء التحقق
-              Navigator.of(context).pop();
-
-              // إذا كانت السيارة متاحة، انتقل إلى صفحة الدفع
-              if (isAvailable) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                  builder: (context) => PrePaymentPage(
-                    imageUrl: widget.imageUrl,
-                    title: widget.title,
-                    price: widget.price,
-                    model: widget.model,
-                    description: widget.description,
-                    weeklyPrice: widget.weeklyPrice,
-                    monthlyPrice: widget.monthlyPrice,
-                    plateNumber: widget.plateNumber,
-                    pickupDate: selectedPickupDate,
-                    pickupTime: selectedPickupTime,
-                    returnDate: selectedReturnDate,
-                    returnTime: selectedReturnTime,
-                  )
-                ));
-              } else {
-                // يمكنك إظهار رسالة للمستخدم عن عدم توفر السيارة هنا
-                print('Car is not available');
-              }
-            },
-
-
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 135),
-                ),
-                child: Text(
-                  'Continue',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
-              ),
-            ),
-            SizedBox(height: 20), 
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: 2,
+        bottomNavigationBar: CustomBottomNavBar(
+        selectedIndex: 1,
         onTap: (index) {},
       ),
     );

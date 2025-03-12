@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.CALL_PHONE"/>
     
     <application
-        android:label="luxuria_rentl_app"
+        android:label="Luxuria"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
