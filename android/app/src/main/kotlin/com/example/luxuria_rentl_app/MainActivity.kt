@@ -1,4 +1,4 @@
-package com.example.luxuria_rentl_app
+package com.luxuria.luxuria_rentl_app
 
 import io.flutter.embedding.android.FlutterActivity
 

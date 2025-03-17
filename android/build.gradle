@@ -1,3 +1,17 @@
+buildscript {
+    ext.kotlin_version = '1.9.22' // استخدم أحدث إصدار من Kotlin هنا
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:8.3.2"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" // تأكد من استخدام المتغير هنا
+        classpath "com.google.gms:google-services:4.3.15" // إذا كان لديك حاجة لذلك
+    }
+}
+
+
 allprojects {
     repositories {
         google()

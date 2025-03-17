@@ -92,36 +92,33 @@ class _PrePaymentPageState extends State<PrePaymentPage> {
     double monthlyPrice = _parsePrice(widget.monthlyPrice);
     double currentPrice;
 
-    // تحقق من قيمة السعر
     if (price < 399) {
-      depositAmount = 1000; // زيادة الديبوزيت بمقدار 1000 إذا كان السعر أقل من 399
+      depositAmount = 1000; 
     } else {
-      depositAmount = 0; // الديبوزيت يكون 0 إذا كان السعر أكبر من 399
+      depositAmount = 0; 
     }
 
-    // حساب totalAmount حسب عدد الأيام
     if (totalDays <= 6) {
-      totalAmount = (price * totalDays) + depositAmount; // إضافة الديبوزيت إلى totalAmount
+      totalAmount = (price * totalDays) + depositAmount; 
     } else if (totalDays >= 7 && totalDays <= 29) {
       currentPrice = weeklyPrice / 7;
-      totalAmount = (currentPrice * totalDays) + depositAmount; // إضافة الديبوزيت إلى totalAmount
+      totalAmount = (currentPrice * totalDays) + depositAmount; 
     } else if (totalDays > 30) {
       currentPrice = monthlyPrice / 30;
-      totalAmount = (currentPrice * totalDays) + depositAmount; // إضافة الديبوزيت إلى totalAmount
+      totalAmount = (currentPrice * totalDays) + depositAmount; 
     }
 
-    // طباعة قيمة الديبوزيت (يمكنك إزالته لاحقًا)
     print("Deposit Amount: $depositAmount");
   }
 
   double _parsePrice(String priceString) {
-    RegExp regExp = RegExp(r'(\d+(\.\d+)?)'); // هذا التعبير العادي يطابق الأرقام بما في ذلك الأرقام العشرية
+    RegExp regExp = RegExp(r'(\d+(\.\d+)?)'); 
     Match? match = regExp.firstMatch(priceString);
 
     if (match != null) {
-      return double.parse(match.group(0)!); // تحويل السلسلة المطابقة إلى double
+      return double.parse(match.group(0)!); 
     }
-    return 0.0; // قيمة افتراضية أو معالجة الأخطاء
+    return 0.0; 
   }
 
   @override

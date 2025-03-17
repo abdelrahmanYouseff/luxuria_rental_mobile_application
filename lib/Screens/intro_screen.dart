@@ -7,14 +7,13 @@ class IntroScreen extends StatelessWidget {
       backgroundColor: Colors.black, // تحديد الخلفية السوداء
       body: Stack(
         children: <Widget>[
-          // عرض صورة GIF بدلاً من الصورة الثابتة
-          Align(
-            alignment: Alignment.center, // لضمان أن الصورة في منتصف الشاشة
+          // عرض صورة GIF في الصفحة بالكامل
+          Center(
             child: Image.asset(
-              'assets/images/logo-gif.gif', // ضع ملف الـ GIF في assets
-              width: 500,  // تحديد العرض
-              height: 500, // تحديد الارتفاع
-              fit: BoxFit.contain, // الحفاظ على نسبة العرض إلى الارتفاع
+              'assets/images/intro-page.gif', // ضع ملف الـ GIF في assets
+              width: double.infinity, // العرض بالكامل
+              height: double.infinity, // الارتفاع بالكامل
+              fit: BoxFit.cover, // ملء الشاشة
             ),
           ),
           // طبقة فوق الصورة تحتوي على النص والزّر
@@ -24,7 +23,7 @@ class IntroScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20.0), // مسافة حول الزر
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange, // لون الزر
+                  backgroundColor: Colors.black, // لون الزر
                   padding: EdgeInsets.symmetric(vertical: 15, horizontal: 100), // حجم الزر
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30), // حواف الزر مستديرة

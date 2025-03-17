@@ -6,7 +6,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_stripe/flutter_stripe.dart';
 
-// تشغيل التطبيق
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
@@ -27,7 +26,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/home': (context) => HomeScreen(),
       },
-      home: SplashScreen(), // تشغيل شاشة السبلاش سكرين أولًا
+      home: SplashScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

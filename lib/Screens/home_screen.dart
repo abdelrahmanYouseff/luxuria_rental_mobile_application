@@ -1,5 +1,4 @@
 import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:luxuria_rentl_app/Widget/custom_bottom_nav_bar.dart';
 import 'package:luxuria_rentl_app/Services/api_service.dart';
@@ -9,6 +8,8 @@ import 'package:luxuria_rentl_app/Screens/mid_range.dart';
 import 'package:luxuria_rentl_app/Screens/economy_screen.dart';
 import 'package:luxuria_rentl_app/Screens/sports_screen.dart';
 import 'package:luxuria_rentl_app/Screens/vans_screen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -17,6 +18,26 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  String _promotionImageUrl = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPromotionImage();
+  }
+
+  Future<void> _fetchPromotionImage() async {
+    final response = await http.get(Uri.parse('https://rentluxuria.com/api/ads/latest'));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      setState(() {
+        _promotionImageUrl = data['image'];
+      });
+    } else {
+      throw Exception('Failed to load promotion image');
+    }
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -166,30 +187,36 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildPromotions() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(15),
-      child: Image.asset('assets/images/promotions.png', width: double.infinity, fit: BoxFit.cover),
-    );
+    return _promotionImageUrl.isNotEmpty
+      ? ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: Image.network(
+            _promotionImageUrl,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+        )
+      : Center(child: CircularProgressIndicator());
   }
 
   Widget _buildLuxuryImage() {
     return GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => LuxuryCarsPage()),
-      );
-    },
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(15),
-      child: Image.asset(
-        'assets/images/categories/luxury.png',
-        width: double.infinity,
-        fit: BoxFit.cover,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LuxuryCarsPage()),
+        );
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: Image.asset(
+          'assets/images/categories/luxury.png',
+          width: double.infinity,
+          fit: BoxFit.cover,
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildMidRangeImage() {
     return GestureDetector(
@@ -200,17 +227,15 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
       child: ClipRRect(
-      borderRadius: BorderRadius.circular(15),
-      child: Image.asset(
-        'assets/images/categories/mid-range.png',
-         width: double.infinity, 
-         fit: BoxFit.cover
-         ),
+        borderRadius: BorderRadius.circular(15),
+        child: Image.asset(
+          'assets/images/categories/mid-range.png',
+          width: double.infinity, 
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
-
-
 
   Widget _buildEconomyImage() {
     return GestureDetector(
@@ -220,15 +245,16 @@ class _HomeScreenState extends State<HomeScreen> {
           MaterialPageRoute(builder: (context) => EconomyPage()),
         );
       },
-
-    child:  ClipRRect(
-          borderRadius: BorderRadius.circular(15),
-          child: Image.asset('assets/images/categories/economy.png', width: double.infinity, fit: BoxFit.cover),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: Image.asset(
+          'assets/images/categories/economy.png', 
+          width: double.infinity, 
+          fit: BoxFit.cover,
         ),
+      ),
     );
   }
-
-
 
   Widget _buildVansImage() {
     return GestureDetector(
@@ -236,30 +262,35 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => VansPage()),
-      );
-  },
-    child:  ClipRRect(
-      borderRadius: BorderRadius.circular(15),
-      child: Image.asset('assets/images/categories/vans.png', width: double.infinity, fit: BoxFit.cover),
-    ),
+        );
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: Image.asset(
+          'assets/images/categories/vans.png', 
+          width: double.infinity, 
+          fit: BoxFit.cover,
+        ),
+      ),
     );
   }
 
-
-
-    Widget _buildSportsImage() {
-      return GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => SportsPage()),
-            );
-        },
-
-    child:  ClipRRect(
-      borderRadius: BorderRadius.circular(15),
-      child: Image.asset('assets/images/categories/sports.png', width: double.infinity, fit: BoxFit.cover),
-    ),
+  Widget _buildSportsImage() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SportsPage()),
+        );
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: Image.asset(
+          'assets/images/categories/sports.png', 
+          width: double.infinity, 
+          fit: BoxFit.cover,
+        ),
+      ),
     );
   }
 
