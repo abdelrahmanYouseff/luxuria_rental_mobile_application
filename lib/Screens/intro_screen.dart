@@ -4,34 +4,31 @@ class IntroScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // تحديد الخلفية السوداء
+      backgroundColor: Colors.black, 
       body: Stack(
         children: <Widget>[
-          // عرض صورة GIF في الصفحة بالكامل
           Center(
             child: Image.asset(
-              'assets/images/intro-page.gif', // ضع ملف الـ GIF في assets
-              width: double.infinity, // العرض بالكامل
-              height: double.infinity, // الارتفاع بالكامل
-              fit: BoxFit.cover, // ملء الشاشة
+              'assets/images/intro-page.gif', 
+              width: double.infinity, 
+              height: double.infinity, 
+              fit: BoxFit.cover, 
             ),
           ),
-          // طبقة فوق الصورة تحتوي على النص والزّر
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: const EdgeInsets.all(20.0), // مسافة حول الزر
+              padding: const EdgeInsets.all(20.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black, // لون الزر
-                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 100), // حجم الزر
+                  backgroundColor: Colors.black, 
+                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 100), 
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30), // حواف الزر مستديرة
+                    borderRadius: BorderRadius.circular(30), 
                   ),
                 ),
                 onPressed: () {
-                  // عند الضغط على الزر، التنقل إلى صفحة الـ Home
-                  Navigator.pushReplacementNamed(context, '/home'); // التنقل إلى صفحة الـ Home
+                  Navigator.pushReplacementNamed(context, '/home'); 
                 },
                 child: Text(
                   'Get Started',
